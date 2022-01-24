@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+canvas{
+    background-color: black;
+}
+div{
+    display: flex;
+    justify-content:center;
+}
+body{
+    background-image: url(https://wallpapercave.com/wp/wp2633737.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+h1,h2,h4{
+    font-family: 'Righteous';
+    font-size: 30px;
+    color: white;
+    letter-spacing: 1px;
+    text-shadow: 3px 3px 0px rgba(0, 0, 0, 1);
+}
+h1{
+    font-size: 40px;
+}
+h4{
+    font-size: 20px;
+}
+a{
+    text-decoration: none;
+    color: white;
+}
