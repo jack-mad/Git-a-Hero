@@ -1,6 +1,7 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let frames = 0;
+let spl2 = false;
 let requestID;
 // canvas.width  = window.innerWidth;
 // canvas.height = window.innerHeight;
@@ -17,8 +18,11 @@ silver.addColorStop(0.9, '#fff');
 silver.addColorStop(1, 'rgba(220, 220, 220, 0)');
 
 window.onload = () => {
+    splash1.draw();
     document.getElementById('start').onclick = () => {
-    startGame();
+    splash2.draw();
+    spl2 = true;
+    //startGame();
     };
 }
 
@@ -26,6 +30,21 @@ function startGame() {
         
       requestID = requestAnimationFrame(updateCanvas)
 }
+
+
+class Splash{
+    constructor(imagen) {
+        this.x = 0;
+        this.y = 0;
+        this.img= new Image ();
+        this.img.src = imagen;
+    }
+    draw() {
+        ctx.drawImage(this.img,this.x,this.y,canvas.width,canvas.height);
+    }
+}
+
+
 
 class Tablero {
     constructor() {
@@ -36,7 +55,7 @@ class Tablero {
         //puntos
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
-        ctx.font = "30px Righteous"
+        ctx.font = "30px Oxanium"
         ctx.fillText("Puntos:",canvas.width/2,50);
         ctx.fillText("XX",canvas.width/2,100);
         //---------
@@ -106,6 +125,8 @@ class Tab{
     
 }
 const tablero = new Tablero();
+const splash1 = new Splash("/assets/images/splash1.png");
+const splash2 = new Splash("/assets/images/splash2.png");
 
 const b1 = new Botones('assets/images/c_gr.png',145,834,80,50);
 const b2 = new Botones('assets/images/c_re.png',255,834,80,50);
@@ -127,6 +148,7 @@ function lineas(){
 function updateCanvas(){
     frames++;
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+    
     tablero.draw();
     lineas();
     b1.draw();
@@ -155,8 +177,11 @@ addEventListener("keydown", (event) => {
       if (event.keyCode === 70) { //F
         b4.pressed = true;
       }
-      if (event.keyCode === 76) { //L Shift
+      if (event.keyCode === 76) { //L 
         b5.pressed = true;
+      }
+      if (spl2 === true && event.keyCode === 13) { //enter 
+        startGame();
       }
 }) 
 

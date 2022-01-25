@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oxanium&display=swap');
 canvas{
     background-color: black;
 }
@@ -13,7 +14,7 @@ body{
     background-size: cover;
 }
 h1,h2,h4{
-    font-family: 'Righteous';
+    font-family: 'Oxanium';
     font-size: 30px;
     color: white;
     letter-spacing: 1px;
@@ -34,10 +35,9 @@ img{
 }
 button {
     font-size: 30px;
-    
     text-shadow: 3px 3px 0px rgba(0, 0, 0, 1);
-    font-family: 'Righteous';
-    background-color: #bd031c;
+    font-family: 'Oxanium';
+    background-color: #e02e40;
     color: #fff;
     padding: 10px 25px;
     border: 0;
