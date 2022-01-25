@@ -23,7 +23,7 @@ window.onload = () => {
 }
 
 function startGame() {
-    
+        
       requestID = requestAnimationFrame(updateCanvas)
 }
 
@@ -67,19 +67,27 @@ class Botones{
         this.height = h;
         this.img = new Image();
         this.img.src = imagen;   
+        this.pressed = false;
     }
     draw(){
         ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
+        if (this.pressed) {
+            this.y += 6;
+            if (this.y > 840){
+                this.y = 834;
+                this.pressed = false;
+            }
+        }
     }
-        
+            
     
 }
 const tablero = new Tablero();
 
-const b1 = new Botones('assets/images/c_gr.png',145,canvas.height-165,80,50);
-const b2 = new Botones('assets/images/c_re.png',255,canvas.height-165,80,50);
-const b3 = new Botones('assets/images/c_ye.png',365,canvas.height-165,80,50);
-const b4 = new Botones('assets/images/c_bl.png',475,canvas.height-165,80,50);
+const b1 = new Botones('assets/images/c_gr.png',145,834,80,50);
+const b2 = new Botones('assets/images/c_re.png',255,834,80,50);
+const b3 = new Botones('assets/images/c_ye.png',365,834,80,50);
+const b4 = new Botones('assets/images/c_bl.png',475,834,80,50);
 const b5 = new Botones('assets/images/b_or.png',canvas.width/2-280,canvas.height-120,canvas.width-140,50);
 
 function lineas(){
@@ -103,7 +111,29 @@ function updateCanvas(){
     b3.draw();
     b4.draw();
     b5.draw();
-    console.log(frames)
+    //console.log(frames)
+
+    if (requestID) {
+        requestID = requestAnimationFrame(updateCanvas)
+    }
 }
 
+addEventListener("keydown", (event) => {
+    //izquierda
+      if (event.keyCode === 65) { //Aa
+        b1.pressed = true;        
+      }
+      if (event.keyCode === 83) { //S
+        b2.pressed = true;
+      }
+      if (event.keyCode === 68) { //D
+        b3.pressed = true;
+      }
+      if (event.keyCode === 70) { //F
+        b4.pressed = true;
+      }
+    //   if (event.keyCode === ) { //Space
+    //     b5.pressed = true;
+    //   }
+}) 
 
