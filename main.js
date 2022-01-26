@@ -6,6 +6,11 @@ let requestID;
 // canvas.width  = window.innerWidth;
 // canvas.height = window.innerHeight;
 
+let puntos = 0;
+let notas =0;
+let multiplicador = 1;
+let gauge = 0;
+
 //color-plateado
 var silver = ctx.createLinearGradient(0, canvas.height/2, 0, canvas.height-50);
 silver.addColorStop(0, 'rgba(220, 220, 220, 0)');
@@ -18,20 +23,19 @@ silver.addColorStop(0.9, '#fff');
 silver.addColorStop(1, 'rgba(220, 220, 220, 0)');
 
 window.onload = () => {
-    splash1.draw();
-    document.getElementById('start').onclick = () => {
-    splash2.draw();
-    grid.draw()
-    spl2 = true;
-    //startGame();
-    };
+    // splash1.draw();
+    // document.getElementById('start').onclick = () => {
+    // splash2.draw();
+    // grid.draw()
+    // spl2 = true;
+    startGame();
+    // };
 }
 
 function startGame() {
         
       requestID = requestAnimationFrame(updateCanvas)
 }
-
 
 class Splash{
     constructor(imagen) {
@@ -44,8 +48,6 @@ class Splash{
         ctx.drawImage(this.img,this.x,this.y,canvas.width,canvas.height);
     }
 }
-
-
 
 class Tablero {
     constructor() {
@@ -179,6 +181,12 @@ function updateCanvas(){
     video.draw();
     tablero.draw();
     lineas();
+
+    notaVerde.display();
+    notaRoja.display();
+    notaAmarilla.display();
+    notaAzul.display();
+    
     b1.draw();
     b2.draw();
     b3.draw();
@@ -276,12 +284,6 @@ const item18 = new GridItem("assets/images/albums/18.jpg",45+album,105+album*4,"
 const item19 = new GridItem("assets/images/albums/19.jpg",45+album*2,105+album*4,"Pretty Fly","The Offspring")
 const item20 = new GridItem("assets/images/albums/20.png",45+album*3,105+album*4,"Pretty Fly","The Offspring")
 
-
-
-
-
-
-
 class Grid{
     draw(){
         item1.ok();
@@ -333,24 +335,44 @@ class Grid{
 
 const grid = new Grid();
 
-addEventListener("keydown", (event) => {
-    //izquierda
-      if (event.keyCode === 65) { //Aa
-        b1.pressed = true;        
-      }
-      if (event.keyCode === 83) { //S
-        b2.pressed = true;
-      }
-      if (event.keyCode === 68) { //D
-        b3.pressed = true;
-      }
-      if (event.keyCode === 70) { //F
-        b4.pressed = true;
-      }
-      if (event.keyCode === 76) { //L 
-        b5.pressed = true;
-      }
-      if (spl2 === true && event.keyCode === 13) { //enter 
-        startGame();
-      }
-}) 
+class MoverNota{
+    constructor(x_in,x_ok,x_fin,nota){
+        this.x_ini = x_in; //A:255; 
+        this.y_ini = 520; //constante
+        this.x_ideal = x_ok//A:144.5;
+        this.y_ideal = 835; 
+        this.x_fin = x_fin; //A:100;
+        this.y_fin = 1000;
+        this.width_ini = 40;
+        this.heigth_ini = 24;
+        this.img = new Image();
+        this.img.src = nota;
+        this.width_fin = 90;
+        this.heigth_fin = 59;
+        
+    }
+    display(){
+        if (frames%2 === 0 || frames%2 === 1){
+            if (this.x_ini > 350){
+                this.width_ini += (this.width_fin/this.width_ini)/6
+                this.heigth_ini += (this.heigth_fin/this.heigth_ini)/11
+                this.x_ini -= Math.tan((this.y_fin-this.y_ini)/(this.x_fin-this.x_ini));
+            }else{
+                this.width_ini += (this.width_fin/this.width_ini)/6
+                this.heigth_ini += (this.heigth_fin/this.heigth_ini)/11
+                this.x_ini += Math.tan((this.y_fin-this.y_ini)/(this.x_ini-this.x_fin))
+            }
+            this.y_ini = this.y_ini+2
+            ctx.drawImage(this.img,this.x_ini,this.y_ini,this.width_ini,this.heigth_ini)
+            if(this.y_ini === canvas.height-200){
+                ctx.clearRect(this.x_ini,this.y_ini,this.width_ini,this.height_ini)
+            }
+        }
+    }
+
+}
+const notaVerde = new MoverNota(250,144,75,'assets/images/c_gr.png')
+const notaRoja = new MoverNota(303,255,226,'assets/images/c_re.png')
+const notaAmarilla = new MoverNota(352.9,365,371.5,'assets/images/c_ye.png')
+const notaAzul = new MoverNota(405.9,475,502,'assets/images/c_bl.png')
+
