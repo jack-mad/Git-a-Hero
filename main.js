@@ -9,8 +9,7 @@ let requestID;
 let puntos = 0;
 let notas =0;
 let multiplicador = 1;
-let gauge = 50;
-
+let gauge = 25;
 
 
 
@@ -62,6 +61,7 @@ class Tablero {
         this.puntos.src = "assets/images/points.png"
         this.stage = new Image();
         this.stage.src = "assets/images/stage.png"
+        
     }
     draw() {
         ctx.drawImage(this.stage,0,0,canvas.width,canvas.height)
@@ -91,6 +91,7 @@ class Tablero {
         ctx.fillText(gauge,canvas.width-130,canvas.height/2+85);
         //---------
     }
+    
     gameOver(){
         requestID = false
     }
@@ -106,6 +107,7 @@ class Botones{
         this.img = new Image();
         this.img.src = imagen;   
         this.pressed = false;
+       
     }
     draw(){
         ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
@@ -114,10 +116,16 @@ class Botones{
             if (this.y > 840){
                 this.y = 834;
                 this.pressed = false;
+            
+            }
+            if(fuego.pressed === true ){
+                fuego.draw();
+                fuego.pressed = false;
             }
         }
+        
     }
-            
+               
     
 }
 class Tab{
@@ -201,6 +209,8 @@ function updateCanvas(){
     b3.draw();
     b4.draw();
     b5.draw();
+
+    
     //console.log(frames)
 
     if (requestID) {
@@ -211,35 +221,67 @@ function updateCanvas(){
 addEventListener("keydown", (event) => {
     //izquierda
       if (event.keyCode === 65) { //Aa
+        fuego.x = 133;
         b1.pressed = true;
+        
         if(notaVerde.y_ini > notaVerde.tol1 && notaVerde.y_ini < notaVerde.tol2){
             notaVerde.pressed = true;
+            
+    
         }else{
+            
             gauge--;
+            notas = 0;
+            
+            
         } 
       }
       if (event.keyCode === 83) { //S
+        fuego.x=243;
         b2.pressed = true;
+        
         if(notaRoja.y_ini > notaRoja.tol1 && notaRoja.y_ini < notaRoja.tol2){
             notaRoja.pressed = true;
+            
+            
+    
         }else{
+            
             gauge--;
+            notas = 0;
+            
         }  
       }
       if (event.keyCode === 68) { //D
+        fuego.x=353;
         b3.pressed = true;
+        
         if(notaAmarilla.y_ini > notaAmarilla.tol1 && notaAmarilla.y_ini < notaAmarilla.tol2){
             notaAmarilla.pressed = true;
+            
+            
+    
         }else{
+            
             gauge--;
+            notas = 0;
+            
         }  
       }
       if (event.keyCode === 70) { //F
+        fuego.x=463;
         b4.pressed = true;
+        
         if(notaAzul.y_ini > notaAzul.tol1 && notaAzul.y_ini < notaAzul.tol2){
             notaAzul.pressed = true;
+            
+            
         }else{
+            
             gauge--;
+            notas = 0;
+            
+            
         }   
       }
     //   if (event.keyCode === 76) { //L 
@@ -247,6 +289,7 @@ addEventListener("keydown", (event) => {
     //   }
       if (spl2 === true && event.keyCode === 13) { //enter 
         startGame();
+        
       }
 }) 
 
@@ -365,10 +408,9 @@ class Grid{
 const grid = new Grid();
 
 class MoverNota{
-    constructor(x_in,x_ok,x_fin,nota){
+    constructor(x_in,x_fin,nota){
         this.x_ini = x_in; //A:255; 
         this.y_ini = 520; //constante
-        this.x_ideal = x_ok//A:144.5;
         this.tol1 = 825; 
         this.tol2 = 835;
         this.x_fin = x_fin; //A:100;
@@ -404,10 +446,10 @@ class MoverNota{
     }
 
 }
-const notaVerde = new MoverNota(250,144,75,'assets/images/c_gr.png')
-const notaRoja = new MoverNota(303,255,226,'assets/images/c_re.png')
-const notaAmarilla = new MoverNota(352.9,365,371.5,'assets/images/c_ye.png')
-const notaAzul = new MoverNota(405.9,475,502,'assets/images/c_bl.png')
+const notaVerde = new MoverNota(250,75,'assets/images/c_gr.png')
+const notaRoja = new MoverNota(303,226,'assets/images/c_re.png')
+const notaAmarilla = new MoverNota(352.9,371.5,'assets/images/c_ye.png')
+const notaAzul = new MoverNota(405.9,502,'assets/images/c_bl.png')
 
 function drawSong() {
 
@@ -415,70 +457,74 @@ function drawSong() {
         switch (item.nota) {
             case "a":
                 if (frames >= item.frame){ 
-                    console.log(notaVerde.pressed)
-                    console.log(notas)
-                    console.log(puntos)
+                    
                     notaVerde.display();
                 }
                 if((notaVerde.y_ini) > 1000){
                     song1.splice(index_nota,1)
+                    
                 }
                 if(notaVerde.pressed === true){
+                    fuego.pressed = true;
                     puntos += 50;
                     notas++;
                     gauge++;
                     song1.splice(index_nota,1)
+                    
                 }
             break;
             case "s":
                 if (frames >= item.frame){ 
-                    console.log(notaRoja.pressed)
-                    console.log(notas)
-                    console.log(puntos)
+                    
                     notaRoja.display();
                 }
                 if((notaRoja.y_ini) > 1000){
                     song1.splice(index_nota,1)
+                    
                 }
                 if(notaRoja.pressed === true){
+                    fuego.pressed = true;
                     puntos += 50;
                     notas++;
                     gauge++;
                     song1.splice(index_nota,1)
+                    
                 }
             break;
             case "d":
                 if (frames >= item.frame){ 
-                    console.log(notaAmarilla.pressed)
-                    console.log(notas)
-                    console.log(puntos)
+                    
                     notaAmarilla.display();
                 }
                 if((notaAmarilla.y_ini) > 1000){
                     song1.splice(index_nota,1)
+                    
                 }
                 if(notaAmarilla.pressed === true){
+                    fuego.pressed = true;
                     puntos += 50;
                     notas++;
                     gauge++;
                     song1.splice(index_nota,1)
+                    
                 }
             break;
             case "f":
                 if (frames >= item.frame){ 
-                    console.log(notaAzul.pressed)
-                    console.log(notas)
-                    console.log(puntos)
+                    
                     notaAzul.display();
                 }
                 if((notaAzul.y_ini) > 1000){
                     song1.splice(index_nota,1)
+                    
                 }
                 if(notaAzul.pressed === true){
+                    fuego.pressed = true;
                     puntos += 50;
                     notas++;
                     gauge++;
                     song1.splice(index_nota,1)
+                    
                 }
             break;
         }
@@ -487,31 +533,48 @@ function drawSong() {
 
 }
 
+
+class Fuego{
+    constructor(){
+        this.x = 0;
+        this.y = canvas.height-280;
+        this.width = 100;
+        this.height = 150;
+        this.fire = new Image();
+        this.fire.src = "assets/images/fire1.png";
+        this.pressed = false;
+    }   
+    draw(){
+        if (frames%2 === 0|| frames%2 === 1){
+            ctx.drawImage(this.fire,this.x,this.y,this.width,this.height);
+        }
+        
+    }
+        
+}
+
+
+const fuego = new Fuego()
+// const fuego2 = new Fuego(200,80);
+// const fuego3 = new Fuego(400,80);
+// const fuego4 = new Fuego(600,80);
+
+console.log(fuego.pressed)
+
 let song1 = [
     {
         nota:"a",
         frame:80,
     },{
-        nota:"f",
+        nota:"s",
         frame:140,
     },
     {
-        nota:"s",
+        nota:"d",
         frame:150,
     },
     {
-        nota:"d",
-        frame:180,
-    },
-    {
         nota:"f",
-        frame:210,
-    },
-    {
-        nota:"a",
-        frame:230,
-    },{
-        nota:"s",
-        frame:250,
+        frame:180,
     }
 ];
