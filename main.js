@@ -9,7 +9,10 @@ let requestID;
 let puntos = 0;
 let notas =0;
 let multiplicador = 1;
-let gauge = 0;
+let gauge = 50;
+
+
+
 
 //color-plateado
 var silver = ctx.createLinearGradient(0, canvas.height/2, 0, canvas.height-50);
@@ -57,8 +60,11 @@ class Tablero {
         this.gauge.src = "assets/images/gauge.png"
         this.puntos = new Image();
         this.puntos.src = "assets/images/points.png"
+        this.stage = new Image();
+        this.stage.src = "assets/images/stage.png"
     }
     draw() {
+        ctx.drawImage(this.stage,0,0,canvas.width,canvas.height)
         //Tablero
         ctx.beginPath();
         ctx.strokeStyle = silver;
@@ -70,6 +76,7 @@ class Tablero {
         ctx.stroke();
 
         //Valvula y puntos
+        
         ctx.drawImage(this.gauge,canvas.width - 100,canvas.height/2, this.gauge.width/2.5, this.gauge.height/2.5)
         ctx.drawImage(this.puntos,canvas.width - 650,canvas.height/2, this.puntos.width/1.8, this.puntos.height/1.8)
        
@@ -77,8 +84,11 @@ class Tablero {
         ctx.fillStyle = "white";
         
         ctx.font = "30px Oxanium"
-        ctx.fillText("0000",canvas.width - 595,canvas.height/2+60);
-        ctx.fillText("1",canvas.width - 530,canvas.height/2+60);
+        ctx.fillText(puntos,canvas.width - 595,canvas.height/2+60);
+        ctx.fillText(multiplicador,canvas.width - 530,canvas.height/2+60);
+        ctx.textAlign="center"
+        ctx.fillText(notas+" notas presionadas",canvas.width/2,canvas.height/2+20);
+        ctx.fillText(gauge,canvas.width-130,canvas.height/2+85);
         //---------
     }
     gameOver(){
@@ -136,8 +146,10 @@ class Tab{
 
 class VideoFrame{
     constructor(){
-        this.x = 50;
-        this.y = 50;
+        this.x = 20;
+        this.y = 140;
+        this.width=230;
+        this.height=120
         this.image1 = new Image();
         this.image1.src = "assets/images/video/010.png";
         this.image2 = new Image();
@@ -149,7 +161,8 @@ class VideoFrame{
             //if ternario true false en una linea
             this.image = this.image === this.image1 ? this.image2 : this.image1
         }
-        ctx.drawImage(this.image,this.x,this.y)
+        ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
+        ctx.drawImage(this.image,canvas.width-this.width-20,this.y,this.width,this.height)
     }
 }
 
@@ -178,15 +191,11 @@ function lineas(){
 function updateCanvas(){
     frames++;
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    video.draw();
     tablero.draw();
-    lineas();
-
-    notaVerde.display();
-    notaRoja.display();
-    notaAmarilla.display();
-    notaAzul.display();
+    video.draw();
     
+    lineas();
+    drawSong();
     b1.draw();
     b2.draw();
     b3.draw();
@@ -202,20 +211,40 @@ function updateCanvas(){
 addEventListener("keydown", (event) => {
     //izquierda
       if (event.keyCode === 65) { //Aa
-        b1.pressed = true;        
+        b1.pressed = true;
+        if(notaVerde.y_ini > notaVerde.tol1 && notaVerde.y_ini < notaVerde.tol2){
+            notaVerde.pressed = true;
+        }else{
+            gauge--;
+        } 
       }
       if (event.keyCode === 83) { //S
         b2.pressed = true;
+        if(notaRoja.y_ini > notaRoja.tol1 && notaRoja.y_ini < notaRoja.tol2){
+            notaRoja.pressed = true;
+        }else{
+            gauge--;
+        }  
       }
       if (event.keyCode === 68) { //D
         b3.pressed = true;
+        if(notaAmarilla.y_ini > notaAmarilla.tol1 && notaAmarilla.y_ini < notaAmarilla.tol2){
+            notaAmarilla.pressed = true;
+        }else{
+            gauge--;
+        }  
       }
       if (event.keyCode === 70) { //F
         b4.pressed = true;
+        if(notaAzul.y_ini > notaAzul.tol1 && notaAzul.y_ini < notaAzul.tol2){
+            notaAzul.pressed = true;
+        }else{
+            gauge--;
+        }   
       }
-      if (event.keyCode === 76) { //L 
-        b5.pressed = true;
-      }
+    //   if (event.keyCode === 76) { //L 
+    //     b5.pressed = true;
+    //   }
       if (spl2 === true && event.keyCode === 13) { //enter 
         startGame();
       }
@@ -340,7 +369,8 @@ class MoverNota{
         this.x_ini = x_in; //A:255; 
         this.y_ini = 520; //constante
         this.x_ideal = x_ok//A:144.5;
-        this.y_ideal = 835; 
+        this.tol1 = 825; 
+        this.tol2 = 835;
         this.x_fin = x_fin; //A:100;
         this.y_fin = 1000;
         this.width_ini = 40;
@@ -349,24 +379,27 @@ class MoverNota{
         this.img.src = nota;
         this.width_fin = 90;
         this.heigth_fin = 59;
+        this.pressed = false;
         
     }
     display(){
         if (frames%2 === 0 || frames%2 === 1){
-            if (this.x_ini > 350){
-                this.width_ini += (this.width_fin/this.width_ini)/6
-                this.heigth_ini += (this.heigth_fin/this.heigth_ini)/11
-                this.x_ini -= Math.tan((this.y_fin-this.y_ini)/(this.x_fin-this.x_ini));
-            }else{
-                this.width_ini += (this.width_fin/this.width_ini)/6
-                this.heigth_ini += (this.heigth_fin/this.heigth_ini)/11
-                this.x_ini += Math.tan((this.y_fin-this.y_ini)/(this.x_ini-this.x_fin))
-            }
-            this.y_ini = this.y_ini+2
-            ctx.drawImage(this.img,this.x_ini,this.y_ini,this.width_ini,this.heigth_ini)
-            if(this.y_ini === canvas.height-200){
-                ctx.clearRect(this.x_ini,this.y_ini,this.width_ini,this.height_ini)
-            }
+            
+                if (this.x_ini > 350){
+                    this.width_ini += (this.width_fin/this.width_ini)/6
+                    this.heigth_ini += (this.heigth_fin/this.heigth_ini)/11
+                    this.x_ini -= Math.tan((this.y_fin-this.y_ini)/(this.x_fin-this.x_ini));
+                }else{
+                    this.width_ini += (this.width_fin/this.width_ini)/6
+                    this.heigth_ini += (this.heigth_fin/this.heigth_ini)/11
+                    this.x_ini += Math.tan((this.y_fin-this.y_ini)/(this.x_ini-this.x_fin))
+                }
+                this.y_ini = this.y_ini+2
+                ctx.drawImage(this.img,this.x_ini,this.y_ini,this.width_ini,this.heigth_ini)
+                if(this.y_ini === canvas.height-200){
+                    ctx.clearRect(this.x_ini,this.y_ini,this.width_ini,this.height_ini)
+                }
+            
         }
     }
 
@@ -376,3 +409,109 @@ const notaRoja = new MoverNota(303,255,226,'assets/images/c_re.png')
 const notaAmarilla = new MoverNota(352.9,365,371.5,'assets/images/c_ye.png')
 const notaAzul = new MoverNota(405.9,475,502,'assets/images/c_bl.png')
 
+function drawSong() {
+
+    song1.forEach((item,index_nota)=>{
+        switch (item.nota) {
+            case "a":
+                if (frames >= item.frame){ 
+                    console.log(notaVerde.pressed)
+                    console.log(notas)
+                    console.log(puntos)
+                    notaVerde.display();
+                }
+                if((notaVerde.y_ini) > 1000){
+                    song1.splice(index_nota,1)
+                }
+                if(notaVerde.pressed === true){
+                    puntos += 50;
+                    notas++;
+                    gauge++;
+                    song1.splice(index_nota,1)
+                }
+            break;
+            case "s":
+                if (frames >= item.frame){ 
+                    console.log(notaRoja.pressed)
+                    console.log(notas)
+                    console.log(puntos)
+                    notaRoja.display();
+                }
+                if((notaRoja.y_ini) > 1000){
+                    song1.splice(index_nota,1)
+                }
+                if(notaRoja.pressed === true){
+                    puntos += 50;
+                    notas++;
+                    gauge++;
+                    song1.splice(index_nota,1)
+                }
+            break;
+            case "d":
+                if (frames >= item.frame){ 
+                    console.log(notaAmarilla.pressed)
+                    console.log(notas)
+                    console.log(puntos)
+                    notaAmarilla.display();
+                }
+                if((notaAmarilla.y_ini) > 1000){
+                    song1.splice(index_nota,1)
+                }
+                if(notaAmarilla.pressed === true){
+                    puntos += 50;
+                    notas++;
+                    gauge++;
+                    song1.splice(index_nota,1)
+                }
+            break;
+            case "f":
+                if (frames >= item.frame){ 
+                    console.log(notaAzul.pressed)
+                    console.log(notas)
+                    console.log(puntos)
+                    notaAzul.display();
+                }
+                if((notaAzul.y_ini) > 1000){
+                    song1.splice(index_nota,1)
+                }
+                if(notaAzul.pressed === true){
+                    puntos += 50;
+                    notas++;
+                    gauge++;
+                    song1.splice(index_nota,1)
+                }
+            break;
+        }
+        
+    })
+
+}
+
+let song1 = [
+    {
+        nota:"a",
+        frame:80,
+    },{
+        nota:"f",
+        frame:140,
+    },
+    {
+        nota:"s",
+        frame:150,
+    },
+    {
+        nota:"d",
+        frame:180,
+    },
+    {
+        nota:"f",
+        frame:210,
+    },
+    {
+        nota:"a",
+        frame:230,
+    },{
+        nota:"s",
+        frame:250,
+    }
+];
