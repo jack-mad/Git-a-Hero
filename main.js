@@ -9,8 +9,8 @@ let requestID;
 let puntos = 0;
 let notas =0;
 let multiplicador = 1;
-let gauge = 25;
-
+let dif = 8;
+let gauge = dif/2;
 
 
 //color-plateado
@@ -92,11 +92,25 @@ class Tablero {
         //---------
     }
     
-    gameOver(){
-        requestID = false
-    }
+    
 }
 
+class EndSplash{
+    constructor(){
+        this.x = 0;
+        this.y = 0;
+        this.over = new Image();
+        this.over.src = "assets/images/sad.png"
+        this.win = new Image();
+        this.win.src = "assets/images/happy.png"
+    }
+    gameOver(){
+        ctx.drawImage(this.over,this.x,this.y, canvas.width, canvas.height)
+    }
+    winner(){
+        ctx.drawImage(this.win,this.x,this.y, canvas.width, canvas.height)
+    }
+}
 
 class Botones{
     constructor(imagen,x,y,w,h){
@@ -178,6 +192,7 @@ class VideoFrame{
 const tablero = new Tablero();
 const splash1 = new Splash("/assets/images/splash1.png");
 const splash2 = new Splash("/assets/images/splash2.png");
+const final = new EndSplash();
 const video = new VideoFrame();
 const b1 = new Botones('assets/images/c_gr.png',145,834,80,50);
 const b2 = new Botones('assets/images/c_re.png',255,834,80,50);
@@ -197,6 +212,7 @@ function lineas(){
     }
 }
 function updateCanvas(){
+    
     frames++;
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     tablero.draw();
@@ -209,7 +225,14 @@ function updateCanvas(){
     b3.draw();
     b4.draw();
     b5.draw();
-
+    if (gauge <=0){
+        requestID = undefined;
+        final.gameOver()
+    }
+    if (gauge >=dif){
+        requestID = undefined;
+        final.winner()
+    }
     
     //console.log(frames)
 
@@ -292,6 +315,7 @@ addEventListener("keydown", (event) => {
         
       }
 }) 
+
 
 class GridItem{
     constructor(img,x,y,name,artist){
