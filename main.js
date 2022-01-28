@@ -2,14 +2,87 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let frames = 0;
 let spl2 = false;
+splReady = false;
 let requestID;
 // canvas.width  = window.innerWidth;
 // canvas.height = window.innerHeight;
 let puntos = 0;
 let notas = 0;
 let multiplicador = 1;
-let dif = 20;
+let dif = 4;
 let gauge = dif / 2;
+
+let audio01 = new Audio();
+audio01.src="audio/audio01.mp3";
+audio01.loop = false;
+audio01.volume = 0.6;
+audio01.muted = true;
+let a_intro1 = new Audio();
+a_intro1.src="audio/intro_people.mp3";
+a_intro1.loop = false;
+a_intro1.volume = 0.5;
+a_intro1.muted = true;
+let a_intro2 = new Audio();
+a_intro2.src="audio/intro_music.mp3";
+a_intro2.loop = true;
+a_intro2.volume = 0.8;
+a_intro2.muted = true;
+let a_intro3 = new Audio();
+a_intro3.src="audio/intro_3.mp3";
+a_intro3.loop = false;
+a_intro3.volume = 0.5;
+a_intro3.muted = true;
+
+let click = new Audio();
+click.src="audio/clic.mp3";
+click.loop = false;
+click.volume = 0.5;
+click.muted = true;
+
+let a01 = new Audio();
+a01.src="audio/01.mp3";
+a01.loop = true;
+a01.volume = 0.5;
+a01.muted = true;
+
+let folks = new Audio();
+folks.src="audio/folk_song.mp3";
+folks.loop = false;
+folks.volume = 0.9;
+folks.muted = true;
+
+let nota = new Audio();
+nota.src="audio/nota.mp3";
+nota.loop = false;
+nota.volume = 0.2;
+nota.muted = true;
+
+let bad = new Audio();
+bad.src="audio/bad.mp3";
+bad.loop = false;
+bad.volume = 0.5; 
+bad.muted = true;
+
+let win = new Audio();
+win.src="audio/win_music.mp3";
+win.loop = false;
+win.volume = 0.5; 
+win.muted = true;
+
+let lose = new Audio();
+lose.src="audio/lose.mp3";
+lose.loop = false;
+lose.volume = 0.5; 
+lose.muted = true;
+
+let yeah = new Audio();
+yeah.src="audio/yeah.mp3";
+yeah.loop = false;
+yeah.volume = 0.5; 
+yeah.muted = true;
+
+
+
 //color-plateado
 var silver = ctx.createLinearGradient(0, canvas.height / 2, 0, canvas.height - 50);
 silver.addColorStop(0, 'rgba(220, 220, 220, 0)');
@@ -21,15 +94,37 @@ silver.addColorStop(0.75, 'rgba(220, 220, 220, 0.2)');
 silver.addColorStop(0.9, '#fff');
 silver.addColorStop(1, 'rgba(220, 220, 220, 0)');
 window.onload = () => {
-    // splash1.draw();
-    // document.getElementById('start').onclick = () => {
-    // splash2.draw();
-    // grid.draw()
-    // spl2 = true;
-    startGame();
-    // };a
+    
+    splash1.draw();
+    if(splash1.sound === true)
+    document.getElementById('sound').onclick = () => {
+        a_intro1.muted = false;
+        a_intro1.play();
+        a_intro2.muted = false;
+        a_intro2.play();
+        a_intro3.muted = false;
+        a_intro3.play();
+        
+    }
+    
+
+    document.getElementById('start').onclick = () => {
+        click.muted = false;
+        click.play();     
+    splash2.draw();
+    a01.muted = false;
+        a01.play();
+
+    a_intro1.pause();
+    a_intro3.pause();
+    a_intro2.pause();
+    grid.draw()
+    spl2 = true;
+    //startGame();
+    };
 }
 function startGame() {
+    
     requestID = requestAnimationFrame(updateCanvas)
 }
 class Splash {
@@ -38,9 +133,12 @@ class Splash {
         this.y = 0;
         this.img = new Image();
         this.img.src = imagen;
+        this.sound = false;
     }
     draw() {
         ctx.drawImage(this.img, this.x, this.y, canvas.width, canvas.height);
+        this.sound = true;
+        
     }
 }
 class Tablero {
@@ -48,16 +146,20 @@ class Tablero {
         this.x = 0;
         this.y = 0;
         this.gauge = new Image();
-        this.gauge.src = "assets/images/gauge.png"
+        this.gauge.src = "/images/gauge.png"
         this.puntos = new Image();
-        this.puntos.src = "assets/images/points.png"
+        this.puntos.src = "/images/points.png"
         this.stage = new Image();
-        this.stage.src = "assets/images/stage.png"
+        this.stage.src = "/images/stage.png"
         this.arrow = new Image();
-        this.arrow.src = "assets/images/arrow.png"
+        this.arrow.src = "/images/arrow.png"
     }
     draw() {
         ctx.drawImage(this.stage, 0, 0, canvas.width, canvas.height)
+
+        a01.muted = true;
+        a01.pause();
+       
         //Tablero
         ctx.beginPath();
         ctx.strokeStyle = silver;
@@ -80,6 +182,7 @@ class Tablero {
         ctx.fillText(gauge, canvas.width - 150, canvas.height / 2 + 85);
         ctx.drawImage(this.arrow, 575,(tablero.gauge.height-tablero.gauge.x)-gauge*5+(tablero.gauge.height/2));
         
+
         //---------
     }
 }
@@ -88,9 +191,10 @@ class EndSplash {
         this.x = 0;
         this.y = 0;
         this.over = new Image();
-        this.over.src = "assets/images/sad.png"
+        this.over.src = "/images/sad.png"
         this.win = new Image();
-        this.win.src = "assets/images/happy.png"
+        this.win.src = "/images/happy.png"
+        
     }
     gameOver() {
         ctx.drawImage(this.over, this.x, this.y, canvas.width, canvas.height)
@@ -100,6 +204,10 @@ class EndSplash {
         ctx.fillText(item1.name, canvas.width - 500, canvas.height / 2-40 );
         ctx.fillText(item1.artist, canvas.width - 500, canvas.height / 2 );
         ctx.fillText(puntos + " puntos", canvas.width - 500, canvas.height / 2 + 50 );
+        audio01.pause();
+        nota.pause()
+        lose.muted = false;
+        lose.play(); 
         
     }
     winner() {
@@ -110,7 +218,13 @@ class EndSplash {
         ctx.fillText(item1.name, canvas.width - 500, canvas.height / 2-20 );
         ctx.fillText(item1.artist, canvas.width - 500, canvas.height / 2+20 );
         ctx.fillText(puntos + " puntos", canvas.width - 500, canvas.height / 2 + 70 );
+        audio01.pause()
+        nota.pause()
+        win.muted = false;
+        win.play(); 
     }
+    
+    
 }
 class Botones {
     constructor(imagen, x, y, w, h) {
@@ -132,6 +246,8 @@ class Botones {
             }
             if (fuego.pressed === true) {
                 fuego.draw();
+                nota.muted = false;
+                nota.play();    
                 fuego.pressed = false;
             }
         }
@@ -144,7 +260,7 @@ class Tab {
         this.width = w;
         this.height = h;
         this.img = new Image();
-        this.img.src = 'assets/images/b_or.png';
+        this.img.src = '/images/b_or.png';
         this.pressed = false;
     }
     draw() {
@@ -165,9 +281,9 @@ class VideoFrame {
         this.width = 230;
         this.height = 120
         this.image1 = new Image();
-        this.image1.src = "assets/images/video/010.png";
+        this.image1.src = "images/010.png";
         this.image2 = new Image();
-        this.image2.src = "assets/images/video/011.png";
+        this.image2.src = "images/011.png";
         this.image = this.image1
     }
     draw() {
@@ -180,14 +296,14 @@ class VideoFrame {
     }
 }
 const tablero = new Tablero();
-const splash1 = new Splash("/assets/images/splash1.png");
-const splash2 = new Splash("/assets/images/splash2.png");
+const splash1 = new Splash("/images/splash1.png");
+const splash2 = new Splash("/images/splash2.png");
 const final = new EndSplash();
 const video = new VideoFrame();
-const b1 = new Botones('assets/images/c_gr.png', 145, 834, 80, 50);
-const b2 = new Botones('assets/images/c_re.png', 255, 834, 80, 50);
-const b3 = new Botones('assets/images/c_ye.png', 365, 834, 80, 50);
-const b4 = new Botones('assets/images/c_bl.png', 475, 834, 80, 50);
+const b1 = new Botones('/images/c_gr.png', 145, 834, 80, 50);
+const b2 = new Botones('/images/c_re.png', 255, 834, 80, 50);
+const b3 = new Botones('/images/c_ye.png', 365, 834, 80, 50);
+const b4 = new Botones('/images/c_bl.png', 475, 834, 80, 50);
 const b5 = new Tab(canvas.width / 2 - 280, 874, canvas.width - 140, 50);
 function lineas() {
     //Lineas
@@ -212,15 +328,15 @@ function updateCanvas() {
     b3.draw();
     b4.draw();
     b5.draw();
+    
     if (gauge <= 0) {
         requestID = undefined;
         final.gameOver()
     }
-    if (gauge >= dif) {
+    if (frames >= 8400 || gauge >= dif) {
         requestID = undefined;
         final.winner()
     }
-    //console.log(frames)
     if (requestID) {
         requestID = requestAnimationFrame(updateCanvas)
     }
@@ -229,12 +345,15 @@ addEventListener("keydown", (event) => {
     //izquierda
     if (event.keyCode === 65) { //Aa
         fuego.x = 133;
+        
         b1.pressed = true;
         if (notaVerde.y_ini > notaVerde.tol1 && notaVerde.y_ini < notaVerde.tol2) {
             notaVerde.pressed = true;
         } else {
             gauge--;
             notas = 0;
+            bad.muted = false;
+            bad.play();
         }
     }
     if (event.keyCode === 83) { //S
@@ -245,6 +364,8 @@ addEventListener("keydown", (event) => {
         } else {
             gauge--;
             notas = 0;
+            bad.muted = false;
+            bad.play();
         }
     }
     if (event.keyCode === 68) { //D
@@ -255,6 +376,8 @@ addEventListener("keydown", (event) => {
         } else {
             gauge--;
             notas = 0;
+            bad.muted = false;
+            bad.play();
         }
     }
     if (event.keyCode === 70) { //F
@@ -265,6 +388,8 @@ addEventListener("keydown", (event) => {
         } else {
             gauge--;
             notas = 0;
+            bad.muted = false;
+            bad.play();
         }
     }
     //   if (event.keyCode === 76) { //L 
@@ -272,7 +397,18 @@ addEventListener("keydown", (event) => {
     //   }
     if (spl2 === true && event.keyCode === 13) { //enter 
         startGame();
+        
+        yeah.muted = false;
+        yeah.play(); 
+        folks.muted = false;
+        folks.play();
+        audio01.muted = false;
+        audio01.play();
     }
+     
+    
+    
+    
 })
 class GridItem {
     constructor(img, x, y, name, artist) {
@@ -288,9 +424,9 @@ class GridItem {
         this.name = name;
         this.artist = artist;
         this.lock = new Image();
-        this.lock.src = "assets/images/albums/lock.png"
+        this.lock.src = "/images/albums/lock.png"
         this.gray = new Image();
-        this.gray.src = "assets/images/albums/gray.png"
+        this.gray.src = "/images/albums/gray.png"
     }
     draw() {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
@@ -312,26 +448,26 @@ class GridItem {
     }
 }
 const album = 154
-const item1 = new GridItem("assets/images/albums/01.jpg", 45, 109, "Blue (Da Ba Dee)", "Effiel 65")
-const item2 = new GridItem("assets/images/albums/02.jpeg", 45 + album, 109, "Pretty Fly", "The Offspring")
-const item3 = new GridItem("assets/images/albums/03.jpg", 45 + album * 2, 109, "Pretty Fly", "The Offspring")
-const item4 = new GridItem("assets/images/albums/04.jpg", 45 + album * 3, 109, "Pretty Fly", "The Offspring")
-const item5 = new GridItem("assets/images/albums/05.jpg", 45, 108 + album, "Pretty Fly", "The Offspring")
-const item6 = new GridItem("assets/images/albums/06.jpeg", 45 + album, 108 + album, "Pretty Fly", "The Offspring")
-const item7 = new GridItem("assets/images/albums/07.jpeg", 45 + album * 2, 108 + album, "Pretty Fly", "The Offspring")
-const item8 = new GridItem("assets/images/albums/08.jpeg", 45 + album * 3, 108 + album, "Pretty Fly", "The Offspring")
-const item9 = new GridItem("assets/images/albums/09.jpg", 45, 107 + album * 2, "Pretty Fly", "The Offspring")
-const item10 = new GridItem("assets/images/albums/10.jpg", 45 + album, 107 + album * 2, "Pretty Fly", "The Offspring")
-const item11 = new GridItem("assets/images/albums/11.jpg", 45 + album * 2, 107 + album * 2, "Pretty Fly", "The Offspring")
-const item12 = new GridItem("assets/images/albums/12.jpg", 45 + album * 3, 107 + album * 2, "Pretty Fly", "The Offspring")
-const item13 = new GridItem("assets/images/albums/13.jpg", 45, 106 + album * 3, "Pretty Fly", "The Offspring")
-const item14 = new GridItem("assets/images/albums/14.jpg", 45 + album, 106 + album * 3, "Pretty Fly", "The Offspring")
-const item15 = new GridItem("assets/images/albums/15.jpg", 45 + album * 2, 106 + album * 3, "Pretty Fly", "The Offspring")
-const item16 = new GridItem("assets/images/albums/16.jpg", 45 + album * 3, 106 + album * 3, "Pretty Fly", "The Offspring")
-const item17 = new GridItem("assets/images/albums/17.jpeg", 45, 105 + album * 4, "Pretty Fly", "The Offspring")
-const item18 = new GridItem("assets/images/albums/18.jpg", 45 + album, 105 + album * 4, "Pretty Fly", "The Offspring")
-const item19 = new GridItem("assets/images/albums/19.jpg", 45 + album * 2, 105 + album * 4, "Pretty Fly", "The Offspring")
-const item20 = new GridItem("assets/images/albums/20.png", 45 + album * 3, 105 + album * 4, "Pretty Fly", "The Offspring")
+const item1 = new GridItem("/images/albums/01.jpg", 45, 109, "Blue (Da Ba Dee)", "Effiel 65")
+const item2 = new GridItem("/images/albums/02.jpeg", 45 + album, 109, "Pretty Fly", "The Offspring")
+const item3 = new GridItem("/images/albums/03.jpg", 45 + album * 2, 109, "Pretty Fly", "The Offspring")
+const item4 = new GridItem("/images/albums/04.jpg", 45 + album * 3, 109, "Pretty Fly", "The Offspring")
+const item5 = new GridItem("/images/albums/05.jpg", 45, 108 + album, "Pretty Fly", "The Offspring")
+const item6 = new GridItem("/images/albums/06.jpeg", 45 + album, 108 + album, "Pretty Fly", "The Offspring")
+const item7 = new GridItem("/images/albums/07.jpeg", 45 + album * 2, 108 + album, "Pretty Fly", "The Offspring")
+const item8 = new GridItem("/images/albums/08.jpeg", 45 + album * 3, 108 + album, "Pretty Fly", "The Offspring")
+const item9 = new GridItem("/images/albums/09.jpg", 45, 107 + album * 2, "Pretty Fly", "The Offspring")
+const item10 = new GridItem("/images/albums/10.jpg", 45 + album, 107 + album * 2, "Pretty Fly", "The Offspring")
+const item11 = new GridItem("/images/albums/11.jpg", 45 + album * 2, 107 + album * 2, "Pretty Fly", "The Offspring")
+const item12 = new GridItem("/images/albums/12.jpg", 45 + album * 3, 107 + album * 2, "Pretty Fly", "The Offspring")
+const item13 = new GridItem("/images/albums/13.jpg", 45, 106 + album * 3, "Pretty Fly", "The Offspring")
+const item14 = new GridItem("/images/albums/14.jpg", 45 + album, 106 + album * 3, "Pretty Fly", "The Offspring")
+const item15 = new GridItem("/images/albums/15.jpg", 45 + album * 2, 106 + album * 3, "Pretty Fly", "The Offspring")
+const item16 = new GridItem("/images/albums/16.jpg", 45 + album * 3, 106 + album * 3, "Pretty Fly", "The Offspring")
+const item17 = new GridItem("/images/albums/17.jpeg", 45, 105 + album * 4, "Pretty Fly", "The Offspring")
+const item18 = new GridItem("/images/albums/18.jpg", 45 + album, 105 + album * 4, "Pretty Fly", "The Offspring")
+const item19 = new GridItem("/images/albums/19.jpg", 45 + album * 2, 105 + album * 4, "Pretty Fly", "The Offspring")
+const item20 = new GridItem("/images/albums/20.png", 45 + album * 3, 105 + album * 4, "Pretty Fly", "The Offspring")
 class Grid {
     draw() {
         item1.ok();
@@ -411,10 +547,10 @@ class MoverNota {
         }
     }
 }
-const notaVerde = new MoverNota(250, 75, 'assets/images/c_gr.png')
-const notaRoja = new MoverNota(303, 226, 'assets/images/c_re.png')
-const notaAmarilla = new MoverNota(352.9, 371.5, 'assets/images/c_ye.png')
-const notaAzul = new MoverNota(405.9, 502, 'assets/images/c_bl.png')
+const notaVerde = new MoverNota(250, 75, '/images/c_gr.png')
+const notaRoja = new MoverNota(303, 226, '/images/c_re.png')
+const notaAmarilla = new MoverNota(352.9, 371.5, '/images/c_ye.png')
+const notaAzul = new MoverNota(405.9, 502, '/images/c_bl.png')
 function drawSong() {
     song1.forEach((item, index_nota) => {
         switch (item.nota) {
@@ -488,7 +624,7 @@ class Fuego {
         this.width = 100;
         this.height = 150;
         this.fire = new Image();
-        this.fire.src = "assets/images/fire1.png";
+        this.fire.src = "/images/fire1.png";
         this.pressed = false;
     }
     draw() {
@@ -498,7 +634,6 @@ class Fuego {
     }
 }
 const fuego = new Fuego()
-console.log(fuego.pressed)
 let song1 = [
     {
         nota: "a",
@@ -526,4 +661,3 @@ function generateNotes() {
         enemies.push(enemy);
     }
 }
-console.log(frames)
