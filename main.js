@@ -9,7 +9,7 @@ let requestID;
 let puntos = 0;
 let notas = 0;
 let multiplicador = 1;
-let dif = 4;
+let dif = 8;
 let gauge = dif / 2;
 
 let audio01 = new Audio();
@@ -634,7 +634,8 @@ class Fuego {
     }
 }
 const fuego = new Fuego()
-let song1 = [
+let song1 =
+ [
     {
         nota: "a",
         frame: 80,
